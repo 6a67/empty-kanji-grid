@@ -56,6 +56,10 @@
     % Adjust for additional margins
     \pgfmathsetmacro{\numcols}{max(0, \numcols - #4 - #5)}
     \pgfmathsetmacro{\numrows}{max(0, \numrows - #2 - #3)}
+
+    % Adjust the outer lines to compensate for outer grid
+    \pgfmathsetmacro{\numcolsol}{int(\numcols - 1)}
+    \pgfmathsetmacro{\numrowsol}{int(\numrows - 1)}
     
     % Calculate actual grid size in mm
     \pgfmathsetmacro{\gridwidthmm}{\numcols * #1}
@@ -82,12 +86,14 @@
             }
             
             % Draw thick lines
-            \foreach \i in {0, 1, ..., \numcols} {
+            \draw[color=\modecolor{darkmodelinecolor}{black}, thick] 
+                (-\gridwidthmm/2, -\gridheightmm/2) rectangle (\gridwidthmm/2, \gridheightmm/2);
+            \foreach \i in {1, ..., \numcolsol} {
                 \draw[color=\modecolor{darkmodelinecolor}{black}, thick] 
                     (\i * #1 - \gridwidthmm/2, -\gridheightmm/2) -- 
                     (\i * #1 - \gridwidthmm/2, \gridheightmm/2);
             }
-            \foreach \i in {0, 1, ..., \numrows} {
+            \foreach \i in {1, ..., \numrowsol} {
                 \draw[color=\modecolor{darkmodelinecolor}{black}, thick] 
                     (-\gridwidthmm/2, \i * #1 - \gridheightmm/2) -- 
                     (\gridwidthmm/2, \i * #1 - \gridheightmm/2);
