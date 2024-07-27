@@ -1,0 +1,75 @@
+\documentclass[a4paper]{article}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{calc}
+
+% Set custom page dimensions
+\geometry{
+  paperwidth=21cm,  % Custom paper width
+  paperheight=32.288cm,  % Custom paper height
+  left=1cm,  % Inner margin
+  right=1cm,  % Outer margin
+  top=1.5cm,  % Top margin
+  bottom=1.5cm,  % Bottom margin
+}
+
+% Disable page numbering
+\pagenumbering{gobble}
+
+\newcommand{\tickergrid}[5]{
+    % #1: size of bigger rectangles in mm
+    % #2: additional top margin in cells
+    % #3: additional bottom margin in cells
+    % #4: additional left margin in cells
+    % #5: additional right margin in cells
+    
+    % Calculate page dimensions in mm
+    \pgfmathsetmacro{\pagewidthmm}{\paperwidth / 1mm}
+    \pgfmathsetmacro{\pageheightmm}{\paperheight / 1mm}
+    
+    % Calculate available space in mm
+    \pgfmathsetmacro{\availablewidthmm}{\textwidth / 1mm}
+    \pgfmathsetmacro{\availableheightmm}{\textheight / 1mm}
+    
+    % Calculate number of cells that fit
+    \pgfmathsetmacro{\numcols}{int(floor(\availablewidthmm / #1))}
+    \pgfmathsetmacro{\numrows}{int(floor(\availableheightmm / #1))}
+    
+    % Adjust for additional margins
+    \pgfmathsetmacro{\numcols}{max(0, \numcols - #4 - #5)}
+    \pgfmathsetmacro{\numrows}{max(0, \numrows - #2 - #3)}
+    
+    % Calculate actual grid size in mm
+    \pgfmathsetmacro{\gridwidthmm}{\numcols * #1}
+    \pgfmathsetmacro{\gridheightmm}{\numrows * #1}
+    
+    \begin{tikzpicture}[remember picture, overlay]
+    \node[inner sep=0pt] at (current page.center) {
+        \begin{tikzpicture}[x=1mm, y=1mm]
+            % Draw thin gray lines for 2x2 division
+            \foreach \i in {0, 0.5, ..., \numcols} {
+                \draw[gray, ultra thin] (\i * #1 - \gridwidthmm/2, -\gridheightmm/2) -- 
+                                  (\i * #1 - \gridwidthmm/2, \gridheightmm/2);
+            }
+            \foreach \i in {0, 0.5, ..., \numrows} {
+                \draw[gray, ultra thin] (-\gridwidthmm/2, \i * #1 - \gridheightmm/2) -- 
+                                  (\gridwidthmm/2, \i * #1 - \gridheightmm/2);
+            }
+            
+            % Draw thick black lines
+            \foreach \i in {0, 1, ..., \numcols} {
+                \draw[black, thick] (\i * #1 - \gridwidthmm/2, -\gridheightmm/2) -- 
+                                    (\i * #1 - \gridwidthmm/2, \gridheightmm/2);
+            }
+            \foreach \i in {0, 1, ..., \numrows} {
+                \draw[black, thick] (-\gridwidthmm/2, \i * #1 - \gridheightmm/2) -- 
+                                    (\gridwidthmm/2, \i * #1 - \gridheightmm/2);
+            }
+        \end{tikzpicture}
+    };
+    \end{tikzpicture}
+}
+
+\begin{document}
+\tickergrid{15}{0}{0}{0}{0}
+\end{document}
